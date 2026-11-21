@@ -1,6 +1,7 @@
 import type { Entity } from './db';
 import type { TKey } from './xp';
 import { dk } from './hooks';
+import { BOOKS } from './bible';
 const live = (e: Entity[], k: string) => e.filter((x) => x.kind === k && !x.deleted);
 const dayCount = (e: Entity[], k: string) => new Set(live(e, k).map((x) => dk(x.data.at))).size;
 export type Ach = { key: string; name: string; desc: string; icon: TKey | 'app'; test: (e: Entity[]) => boolean };
@@ -13,5 +14,8 @@ export const ACH: Ach[] = [
   { key: 'explorer', name: 'Explorer', desc: 'Discover a place on your map', icon: 'lifestyle', test: (e) => live(e, 'marker').some((m) => m.data.found) },
   { key: 'first-pr', name: 'First Personal Record', desc: 'Set a new best on a lift', icon: 'fitness', test: (e) => live(e, 'workout').some((w) => w.data.prs?.length > 0) },
   { key: 'hydrated', name: 'Well Hydrated', desc: 'Reach your water target in a day', icon: 'nutrition', test: (e) => { const d: Record<string, number> = {}; for (const w of live(e, 'water')) d[dk(w.data.at)] = (d[dk(w.data.at)] || 0) + w.data.ml; return Object.values(d).some((v) => v >= 2000); } },
+  { key: 'bible-book', name: 'Complete a Bible Book', desc: 'Read every chapter of one book', icon: 'faith', test: (e) => { const r = live(e, 'bible-read'); return BOOKS.some(([n, c]) => new Set(r.filter((x) => x.data.book === n).map((x) => x.data.ch)).size >= c); } },
+  { key: 'savings-25', name: 'First Savings Milestone', desc: 'Reach 25% of a savings goal', icon: 'lifestyle', test: (e) => live(e, 'saving').some((g) => g.data.saved >= g.data.target / 4) },
+  { key: 'book-done', name: 'Finished a Book', desc: 'Mark a book as finished', icon: 'mind', test: (e) => live(e, 'book').some((b) => b.data.status === 'done') },
   { key: 'level-5', name: 'Level 5', desc: 'Reach overall level 5', icon: 'app', test: (e) => live(e, 'xp').reduce((s, x) => s + x.data.amount, 0) >= 576 },
 ];

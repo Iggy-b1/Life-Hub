@@ -8,6 +8,9 @@ import { ACH } from './lib/achievements';
 import Missions from './Missions';
 import Fitness from './Fitness';
 import Nutrition from './Nutrition';
+import Faith from './Faith';
+import Mind from './Mind';
+import Lifestyle, { lifeAlerts } from './Lifestyle';
 import Vehicles, { vehicleAlerts, V } from './Vehicles';
 
 const pending = new Set<string>();
@@ -59,8 +62,11 @@ export default function App() {
   if (view === 'vehicles') return <Vehicles onBack={() => go('home')} />;
   if (view === 'fitness') return <Fitness onBack={() => go('home')} />;
   if (view === 'nutrition') return <Nutrition onBack={() => go('home')} />;
+  if (view === 'faith') return <Faith onBack={() => go('home')} />;
+  if (view === 'mind') return <Mind onBack={() => go('home')} />;
+  if (view === 'lifestyle') return <Lifestyle onBack={() => go('home')} />;
 
-  const alerts = vehicleAlerts(all.filter((e) => e.kind === 'vehicle' && !e.deleted).map((e) => ({ d: e.data as V })));
+  const alerts = [...vehicleAlerts(all.filter((e) => e.kind === 'vehicle' && !e.deleted).map((e) => ({ d: e.data as V }))), ...lifeAlerts(all)];
   const per = (t: TKey) => xp.filter((e) => e.territory === t).reduce((s, e) => s + e.data.amount, 0);
   const total = xp.reduce((s, e) => s + e.data.amount, 0), L = levelFor(total);
 
@@ -80,7 +86,7 @@ export default function App() {
     <section className="quick" aria-label="Quick log">{QUICK.map((q) => <button key={q.kind} style={{ ['--c' as string]: TERRITORIES[q.t].color }} onClick={() => setOpen(q)}>{q.label}</button>)}</section>
 
     <section className="terr">{(Object.keys(TERRITORIES) as TKey[]).map((t) => { const l = levelFor(per(t)), T = TERRITORIES[t];
-      return <article key={t} style={{ ['--c' as string]: T.color }}><img src={`/assets/icons/${t}.png`} alt="" width="72" height="72" />
+      return <article key={t} className="tap" role="button" tabIndex={0} onClick={() => go(t)} onKeyDown={(e) => e.key === 'Enter' && go(t)} style={{ ['--c' as string]: T.color }}><img src={`/assets/icons/${t}.png`} alt="" width="72" height="72" />
         <div><h2>{T.name}</h2><p className="dim">{T.blurb}</p><div className="meter"><i style={{ width: `${l.pct}%` }} /></div><small>Level {l.level}</small></div></article>; })}</section>
     <p className="dim note">Faith XP records what you've done, not how close you are to God. Each territory stops earning after 60 XP a day, so more is never better.</p>
 
