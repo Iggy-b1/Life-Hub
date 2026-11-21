@@ -1,10 +1,11 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, lazy, Suspense, useEffect, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import type { Session } from '@supabase/supabase-js';
 import { sb } from './lib/supabase';
 import { db, save, startSync, exportAll } from './lib/db';
 import { TERRITORIES, TKey, levelFor, award } from './lib/xp';
 
+const MapView = lazy(() => import('./MapView'));
 const QUICK = [
   { kind: 'workout', t: 'fitness' as TKey, label: 'Log workout', ph: 'Bench press 3×8 at 60 kg', xp: 25 },
   { kind: 'meal', t: 'nutrition' as TKey, label: 'Log meal', ph: 'Chicken and rice, 650 kcal, 45 g protein', xp: 10 },
@@ -30,7 +31,7 @@ function Auth() {
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null); const [ready, setReady] = useState(!sb);
-  const [online, setOnline] = useState(navigator.onLine); const [open, setOpen] = useState<(typeof QUICK)[number] | null>(null);
+  const [online, setOnline] = useState(navigator.onLine); const [view, setView] = useState(location.hash === '#map' ? 'map' : 'home'); const [open, setOpen] = useState<(typeof QUICK)[number] | null>(null);
   useEffect(() => {
     if (!sb) return; sb.auth.getSession().then(({ data }) => { setSession(data.session); setReady(true); });
     const { data } = sb.auth.onAuthStateChange((_e, s) => setSession(s)); return () => data.subscription.unsubscribe();
@@ -41,6 +42,7 @@ export default function App() {
   const xp = useLiveQuery(() => db.entities.where('kind').equals('xp').filter((e) => !e.deleted).toArray(), [], []);
   const recent = useLiveQuery(() => db.entities.orderBy('updated_at').reverse().filter((e) => !e.deleted && e.kind !== 'xp').limit(8).toArray(), [], []);
   if (!ready) return null; if (sb && !session) return <Auth />;
+  if (view === 'map') return <Suspense fallback={null}><MapView onBack={() => { setView('home'); location.hash = ''; }} /></Suspense>;
 
   const per = (t: TKey) => xp.filter((e) => e.territory === t).reduce((s, e) => s + e.data.amount, 0);
   const total = xp.reduce((s, e) => s + e.data.amount, 0), L = levelFor(total);
@@ -51,7 +53,7 @@ export default function App() {
   }
   return <div className="shell">
     <header><img src="/assets/icons/app.png" alt="Life Hub" height="40" /><span className={`pill ${online ? '' : 'off'}`}>{!sb ? 'Local only' : online ? 'Synced' : 'Offline: saving here'}</span>
-      <nav><a href="/map.html">World map</a><button className="link" onClick={exportAll}>Export backup</button>{sb && <button className="link" onClick={() => sb!.auth.signOut()}>Sign out</button>}</nav></header>
+      <nav><button className="link" onClick={() => { setView('map'); location.hash = 'map'; }}>My map</button><a href="/map.html">3D terrain</a><button className="link" onClick={exportAll}>Export backup</button>{sb && <button className="link" onClick={() => sb!.auth.signOut()}>Sign out</button>}</nav></header>
 
     <section className="hud" aria-label="Player level"><div className="lvl"><small>Level</small><b>{L.level}</b></div>
       <div className="bar"><div className="meter" role="progressbar" aria-valuenow={L.pct} aria-valuemin={0} aria-valuemax={100}><i style={{ width: `${L.pct}%` }} /></div>

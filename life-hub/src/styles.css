@@ -23,3 +23,14 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--ln);back
 @keyframes up{from{transform:translateY(30px);opacity:0}}
 @media(max-width:600px){.hud{flex-direction:column;text-align:center}.lvl b{font-size:3.5rem}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.mapwrap{position:fixed;inset:0}.mapbox{position:absolute;inset:0}
+.side{position:absolute;top:12px;left:12px;bottom:12px;width:300px;overflow:auto;background:#1a1433ee;border:1px solid var(--ln);border-radius:14px;padding:14px;display:grid;gap:10px;align-content:start;backdrop-filter:blur(8px);z-index:2}
+.row{display:flex;align-items:center;gap:10px;justify-content:space-between}.row h1{font-size:1.6rem;margin:0}.row h2{margin:0}
+.cats,.results{list-style:none;margin:0;padding:0;display:grid;gap:6px}.cats li{display:flex;gap:6px}.cats li.off .cat{opacity:.4}
+.cat{flex:1;display:flex;align-items:center;gap:10px;padding:6px 10px;background:#0c0816;border:1px solid var(--c);border-radius:10px;text-align:left}.cat span{flex:1}
+.nxt{width:40px;border-radius:10px;border:1px solid var(--ln);background:#0c0816;font-size:1.3rem}.nxt:disabled{opacity:.3}
+.pin{width:38px;height:38px;border:0;padding:0;background:center/contain no-repeat;cursor:pointer;filter:drop-shadow(0 2px 4px #000)}.pin.found{opacity:.45;filter:grayscale(.6)}.pin.fav{filter:drop-shadow(0 0 6px #ffd24a)}
+.editor{position:absolute;right:12px;top:12px;width:320px;max-width:calc(100% - 24px);background:var(--pn);border:1px solid var(--c);border-radius:14px;padding:14px;display:grid;gap:10px;z-index:3}
+select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--ln);background:#0c0816;color:var(--tx);font:inherit}
+.star{background:none;border:0;font-size:1.6rem;color:#6a5a80}.star.on{color:#ffd24a}.editor .row input[type=checkbox],.side input[type=checkbox]{width:auto}
+@media(max-width:700px){.side{top:auto;left:0;right:0;bottom:0;width:auto;max-height:42vh;border-radius:16px 16px 0 0}.editor{top:auto;bottom:0;right:0;left:0;max-width:none;max-height:75vh;overflow:auto;border-radius:16px 16px 0 0}}
