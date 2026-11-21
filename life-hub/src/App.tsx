@@ -6,6 +6,8 @@ import { db, save, startSync, exportAll } from './lib/db';
 import { TERRITORIES, TKey, levelFor, award } from './lib/xp';
 import { ACH } from './lib/achievements';
 import Missions from './Missions';
+import Fitness from './Fitness';
+import Nutrition from './Nutrition';
 import Vehicles, { vehicleAlerts, V } from './Vehicles';
 
 const pending = new Set<string>();
@@ -55,6 +57,8 @@ export default function App() {
   if (!ready) return null; if (sb && !session) return <Auth />;
   if (view === 'map') return <Suspense fallback={null}><MapView onBack={() => go('home')} /></Suspense>;
   if (view === 'vehicles') return <Vehicles onBack={() => go('home')} />;
+  if (view === 'fitness') return <Fitness onBack={() => go('home')} />;
+  if (view === 'nutrition') return <Nutrition onBack={() => go('home')} />;
 
   const alerts = vehicleAlerts(all.filter((e) => e.kind === 'vehicle' && !e.deleted).map((e) => ({ d: e.data as V })));
   const per = (t: TKey) => xp.filter((e) => e.territory === t).reduce((s, e) => s + e.data.amount, 0);
@@ -66,7 +70,7 @@ export default function App() {
   }
   return <div className="shell">
     <header><img src="/assets/icons/app.png" alt="Life Hub" height="40" /><span className={`pill ${online ? '' : 'off'}`}>{!sb ? 'Local only' : online ? 'Synced' : 'Offline: saving here'}</span>
-      <nav><button className="link" onClick={() => go('map')}>My map</button><button className="link" onClick={() => go('vehicles')}>Vehicles</button><a href="/map.html">3D terrain</a><button className="link" onClick={exportAll}>Export backup</button>{sb && <button className="link" onClick={() => sb!.auth.signOut()}>Sign out</button>}</nav></header>
+      <nav><button className="link" onClick={() => go('map')}>My map</button><button className="link" onClick={() => go('vehicles')}>Vehicles</button><button className="link" onClick={() => go('fitness')}>Fitness</button><button className="link" onClick={() => go('nutrition')}>Nutrition</button><a href="/map.html">3D terrain</a><button className="link" onClick={exportAll}>Export backup</button>{sb && <button className="link" onClick={() => sb!.auth.signOut()}>Sign out</button>}</nav></header>
 
     <section className="hud" aria-label="Player level"><div className="lvl"><small>Level</small><b>{L.level}</b></div>
       <div className="bar"><div className="meter" role="progressbar" aria-valuenow={L.pct} aria-valuemin={0} aria-valuemax={100}><i style={{ width: `${L.pct}%` }} /></div>
