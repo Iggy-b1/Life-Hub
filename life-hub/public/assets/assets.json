@@ -1,0 +1,28 @@
+{
+  "batch": 1,
+  "source": "source/Neon_Life_Hub_Icon_Collection.png",
+  "note": "Uploaded by user (ChatGPT). Unmodified artwork, cut out only.",
+  "icons": {
+    "app": "assets/icons/app.png",
+    "faith": "assets/icons/faith.png",
+    "fitness": "assets/icons/fitness.png",
+    "nutrition": "assets/icons/nutrition.png",
+    "vehicles": "assets/icons/vehicles.png",
+    "mind": "assets/icons/mind.png",
+    "lifestyle": "assets/icons/lifestyle.png"
+  },
+  "pwa": {
+    "192": "assets/icons/pwa-192.png",
+    "512": "assets/icons/pwa-512.png",
+    "maskable192": "assets/icons/pwa-192-maskable.png",
+    "maskable512": "assets/icons/pwa-512-maskable.png"
+  },
+  "territoryColors": {
+    "faith": "#ffb347",
+    "fitness": "#ff4a2e",
+    "nutrition": "#9be03c",
+    "vehicles": "#2fb4ff",
+    "mind": "#a35bff",
+    "lifestyle": "#ffc23a"
+  }
+}

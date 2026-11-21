@@ -1,0 +1,10 @@
+{
+  "bay-of-plenty": {
+    "label": "Bay of Plenty LiDAR",
+    "s3_prefix": "bay-of-plenty/",
+    "bounds": [175.5, -39.2, 178.3, -37.2],
+    "minzoom": 10,
+    "maxzoom": 16,
+    "priority": 10
+  }
+}
